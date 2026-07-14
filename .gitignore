@@ -1,0 +1,20 @@
+# Dependencies and build output
+node_modules/
+frontend/node_modules/
+frontend/dist/
+backend/target/
+backend/.m2/
+
+# Local configuration
+.env
+.env.*
+!.env.example
+application-local.yml
+
+# IDE and OS noise
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+*.log

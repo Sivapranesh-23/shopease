@@ -1,0 +1,46 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-shopease}
+      MYSQL_USER: ${DB_USER:-shopease}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-shopease}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+    ports:
+      - "3306:3306"
+    volumes:
+      - shopease_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - shopease_redis:/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - shopease_elasticsearch:/usr/share/elasticsearch/data
+
+  mailpit:
+    image: axllent/mailpit:v1.20
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  shopease_mysql:
+  shopease_redis:
+  shopease_elasticsearch:

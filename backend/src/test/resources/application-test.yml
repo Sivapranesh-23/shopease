@@ -1,0 +1,42 @@
+spring:
+  flyway:
+    enabled: false
+
+  datasource:
+    url: jdbc:h2:mem:shopease;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  elasticsearch:
+    uris: http://localhost:9200
+
+  autoconfigure:
+    exclude:
+      # Tests run without live Redis / ES — services are unit-tested in isolation.
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration
+      - org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
+
+app:
+  jwt:
+    secret: dGVzdC1zZWNyZXQta2V5LWZvci1qd3Qtc2lnbmluZy1pbi10ZXN0cy1vbmx5LTUxMmJpdHMtbG9uZw==
+    access-token-ttl-minutes: 60
+    refresh-token-ttl-days: 7
+    issuer: shopease-test
+  payment:
+    provider: stub
+    webhook-secret: whsec_test_secret

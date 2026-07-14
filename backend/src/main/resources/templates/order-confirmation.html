@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed — ShopEase</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #fafafa;
+            color: #2D3748;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid #edf2f7;
+        }
+        .header {
+            background-color: #1a202c;
+            color: #ffffff;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        .header span {
+            color: #ecc94b;
+            font-weight: 600;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        .message {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #4a5568;
+            margin-bottom: 30px;
+        }
+        .order-info {
+            background-color: #f7fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #edf2f7;
+        }
+        .order-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .order-info td {
+            padding: 6px 0;
+            font-size: 14px;
+        }
+        .order-info td.label {
+            color: #718096;
+            width: 120px;
+        }
+        .order-info td.value {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .items-table th {
+            text-align: left;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #edf2f7;
+            font-size: 13px;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .items-table td {
+            padding: 16px 0;
+            border-bottom: 1px solid #edf2f7;
+            font-size: 15px;
+        }
+        .totals-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .totals-table td {
+            padding: 6px 0;
+            font-size: 14px;
+        }
+        .totals-table tr.grand-total td {
+            border-top: 1px solid #edf2f7;
+            padding-top: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a202c;
+        }
+        .btn-wrapper {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .btn {
+            background-color: #1a202c;
+            color: #ffffff !important;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #2d3748;
+        }
+        .footer {
+            background-color: #f7fafc;
+            padding: 24px 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #a0aec0;
+            border-top: 1px solid #edf2f7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Shop<span>Ease</span></h1>
+            <p style="margin: 10px 0 0; font-weight: 300; font-size: 14px; color: #a0aec0; letter-spacing: 1px;">ORDER CONFIRMATION</p>
+        </div>
+        <div class="content">
+            <div class="greeting">Hi {{customerName}},</div>
+            <div class="message">
+                Your order is confirmed and is currently being processed. Thank you for shopping with us! Here are your order details and summary:
+            </div>
+            
+            <div class="order-info">
+                <table>
+                    <tr>
+                        <td class="label">Order Number</td>
+                        <td class="value">{{orderNumber}}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Date</td>
+                        <td class="value">{{orderDate}}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Address</td>
+                        <td class="value">{{shippingAddress}}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th style="text-align: center;">Qty</th>
+                        <th style="text-align: right;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{itemsTable}}
+                </tbody>
+            </table>
+
+            <table class="totals-table">
+                <tr>
+                    <td style="color: #718096;">Subtotal</td>
+                    <td style="text-align: right; font-weight: 600;">{{subtotal}}</td>
+                </tr>
+                <tr>
+                    <td style="color: #718096;">Shipping</td>
+                    <td style="text-align: right; font-weight: 600;">{{shipping}}</td>
+                </tr>
+                <tr class="grand-total">
+                    <td>Total Due</td>
+                    <td style="text-align: right;">{{grandTotal}}</td>
+                </tr>
+            </table>
+
+            <div class="btn-wrapper">
+                <a href="http://localhost:5173/orders" class="btn">View Order Details</a>
+            </div>
+        </div>
+        <div class="footer">
+            &copy; 2026 ShopEase E-commerce Ltd. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

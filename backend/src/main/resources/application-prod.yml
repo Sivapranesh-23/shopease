@@ -1,0 +1,59 @@
+# Production configuration for ShopEase
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DATABASE_URL:jdbc:mysql://localhost:3306/shopease?useSSL=true&requireSSL=true&verifyServerCertificate=false}
+    username: ${DATABASE_USERNAME:shopease}
+    password: ${DATABASE_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  # Enable HTTPS (requires SSL certificate)
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: ${SSL_KEYSTORE_PASSWORD:}
+    key-store-type: PKCS12
+    key-alias: tomcat
+
+# Production CORS - restrict to specific domains
+app:
+  cors:
+    allowed-origins: ${APP_CORS_ORIGINS:https://shop.ease.com,https://www.shop.ease.com}
+  # Production rate limiting
+  rate-limit:
+    enabled: true
+    window-seconds: 60
+    max-requests: 120
+  # Production logging
+logging:
+  level:
+    com.shopease: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.orm.jdbc.bind: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - [%X{traceId}] %msg%n"
+
+# Actuator for monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always

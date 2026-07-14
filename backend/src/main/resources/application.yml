@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: shopease-backend
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: UTC
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# API documentation
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+# Application-specific configuration
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:1c38d1c79cf57fbe1219cbf905dc8a75ecf71462e0ddf4d8179bd4cb72748876}
+    # Access token: 1 hour, refresh token: 7 days
+    access-token-ttl-minutes: 60
+    refresh-token-ttl-days: 7
+    issuer: shopease
+  cors:
+    allowed-origins: ${APP_CORS_ORIGINS:http://localhost:5173,http://localhost:4173}
+  pagination:
+    default-page-size: 12
+    max-page-size: 100
+  rate-limit:
+    enabled: true
+    window-seconds: 60
+    max-requests: 120
+  payment:
+    # Stripe payment provider - configure with environment variables
+    provider: stripe
+    stripe-secret-key: ${APP_STRIPE_SECRET_KEY:}
+    stripe-publishable-key: ${APP_STRIPE_PUBLISHABLE_KEY:}
+    stripe-webhook-secret: ${APP_STRIPE_WEBHOOK_SECRET:}
+    webhook-secret: ${APP_PAYMENT_WEBHOOK_SECRET:whsec_test_secret}
+
+logging:
+  level:
+    com.shopease: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.orm.jdbc.bind: WARN
