@@ -29,12 +29,12 @@ public class SearchServiceImpl implements SearchService {
     private final ProductMapper productMapper;
 
     public SearchServiceImpl(ProductRepository productRepository,
-                             ProductSearchRepository searchRepository,
-                             ElasticsearchOperations elasticsearchOperations,
+                             org.springframework.beans.factory.ObjectProvider<ProductSearchRepository> searchRepositoryProvider,
+                             org.springframework.beans.factory.ObjectProvider<ElasticsearchOperations> elasticsearchOperationsProvider,
                              ProductMapper productMapper) {
         this.productRepository = productRepository;
-        this.searchRepository = searchRepository;
-        this.elasticsearchOperations = elasticsearchOperations;
+        this.searchRepository = searchRepositoryProvider.getIfAvailable();
+        this.elasticsearchOperations = elasticsearchOperationsProvider.getIfAvailable();
         this.productMapper = productMapper;
     }
 
@@ -43,6 +43,11 @@ public class SearchServiceImpl implements SearchService {
         if (query == null || query.trim().isEmpty()) {
             log.debug("Empty search query, returning empty results");
             return Page.empty(pageable);
+        }
+
+        if (elasticsearchOperations == null) {
+            log.debug("Elasticsearch is unconfigured, falling back to database search");
+            return fallbackSearch(query, pageable);
         }
 
         try {
@@ -104,6 +109,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public void indexProduct(Long productId) {
+        if (searchRepository == null) return;
         try {
             Product product = productRepository.findById(productId).orElse(null);
             if (product != null) {
@@ -117,6 +123,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public void indexAll() {
+        if (searchRepository == null) return;
         try {
             List<Product> products = productRepository.findAll();
             List<ProductDocument> docs = products.stream()

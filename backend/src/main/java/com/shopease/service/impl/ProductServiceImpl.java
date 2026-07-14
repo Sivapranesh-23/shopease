@@ -37,11 +37,11 @@ public class ProductServiceImpl implements ProductService {
 
     public ProductServiceImpl(ProductRepository productRepository,
                               CategoryRepository categoryRepository,
-                              ProductSearchRepository searchRepository,
+                              org.springframework.beans.factory.ObjectProvider<ProductSearchRepository> searchRepositoryProvider,
                               ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-        this.searchRepository = searchRepository;
+        this.searchRepository = searchRepositoryProvider.getIfAvailable();
         this.productMapper = productMapper;
     }
 
@@ -174,7 +174,11 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
         productRepository.delete(product);
-        searchRepository.deleteById(id);
+        if (searchRepository != null) {
+            try {
+                searchRepository.deleteById(id);
+            } catch (Exception ignored) {}
+        }
     }
 
     @Override
@@ -189,8 +193,10 @@ public class ProductServiceImpl implements ProductService {
 
     private void index(Product product) {
         try {
-            ProductDocument doc = productMapper.toDocument(product);
-            searchRepository.save(doc);
+            if (searchRepository != null) {
+                ProductDocument doc = productMapper.toDocument(product);
+                searchRepository.save(doc);
+            }
         } catch (Exception ignored) {
             // Search index is best-effort; the DB is the source of truth.
         }
