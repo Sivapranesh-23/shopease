@@ -21,13 +21,9 @@ server:
   port: 8080
   servlet:
     context-path: /
-  # Enable HTTPS (requires SSL certificate)
+  # SSL is terminated at Render's routing proxy layer, run plain HTTP internally.
   ssl:
-    enabled: true
-    key-store: classpath:keystore.p12
-    key-store-password: ${SSL_KEYSTORE_PASSWORD:}
-    key-store-type: PKCS12
-    key-alias: tomcat
+    enabled: false
 
 # Production CORS - restrict to specific domains
 app:
